@@ -43,6 +43,8 @@ export default {
   },
   plugins: [
     svelte({
+      // generate: "ssr",
+      // hydratable: true,
       dev: !production,
       preprocess: sveltePreprocess(),
       css: css => {
