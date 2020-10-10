@@ -5,7 +5,7 @@
   ],
   "scripts": {
     "start": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
-    "client": "yarn workspace @meet-point/client start",
+    "client": "yarn workspace @meet-point/client serve",
     "server": "yarn workspace @meet-point/server start",
     "build": "cd packages/client && yarn build",
     "test": "cd packages/client && yarn validate"

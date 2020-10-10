@@ -1,8 +1,6 @@
 <script lang="ts">
   import {
     Content,
-    Breadcrumb,
-    BreadcrumbItem,
     Grid,
     Row,
     Column,
@@ -24,9 +22,6 @@
     <Grid>
       <Row>
         <Column lg="{16}">
-          <Breadcrumb noTrailingSlash aria-label="Page navigation">
-            <BreadcrumbItem href="/">Getting started</BreadcrumbItem>
-          </Breadcrumb>
           <h1 style="margin-bottom: 1.5rem">Design &amp; build with Carbon</h1>
         </Column>
       </Row>

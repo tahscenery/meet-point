@@ -6,6 +6,7 @@
     "dev": "rollup -cw",
     "build": "rollup -c",
     "start": "sirv public",
+    "serve": "yarn build && yarn start",
     "validate": "svelte-check"
   },
   "dependencies": {
