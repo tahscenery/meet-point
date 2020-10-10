@@ -1,0 +1,7 @@
+{
+  "arrowParens": "avoid",
+  "semi": true,
+  "svelteSortOrder": "scripts-markup-styles",
+  "tabWidth": 2,
+  "useTabs": false
+}
