@@ -29,6 +29,6 @@ mongoose
   });
 
 app.use("/api/auth", routes.auth);
-app.use("/api/user", routes.user);
+app.use("/api/users", routes.user);
 
 app.listen(port, () => console.log(`Server started on port: ${port}`));
