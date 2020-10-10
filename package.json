@@ -4,11 +4,11 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "concurrently --kill-others-on-fail \"yarn backend\" \"yarn frontend\"",
-    "frontend": "yarn workspace @meet-point/frontend start",
-    "backend": "yarn workspace @meet-point/backend start",
-    "build": "cd packages/frontend && yarn build",
-    "test": "cd packages/frontend && yarn test"
+    "start": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
+    "client": "yarn workspace @meet-point/client start",
+    "server": "yarn workspace @meet-point/server start",
+    "build": "cd packages/client && yarn build",
+    "test": "cd packages/client && yarn validate"
   },
   "devDependencies": {
     "concurrently": "^5.3.0"}
