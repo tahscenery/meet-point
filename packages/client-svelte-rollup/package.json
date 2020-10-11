@@ -1,8 +1,7 @@
 {
   "name": "@meet-point/client-svelte-rollup",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "license": "MIT",
-  "private": true,
   "scripts": {
     "dev": "rollup -cw",
     "build": "rollup -c",
@@ -11,6 +10,7 @@
     "validate": "svelte-check"
   },
   "dependencies": {
+    "axios": "^0.20.0",
     "carbon-components-svelte": "^0.12.0",
     "carbon-icons-svelte": "^10.17.0",
     "page": "^1.11.6",

@@ -3,14 +3,14 @@ export type User = {
   password: string;
 };
 
-const url = "http://localhost:3000/api";
+const proxy = "http://localhost:4000/api";
 
 export async function signIn(user: User): Promise<string> {
   try {
     console.log(user);
-    let response = await fetch(`${url}/auth/sign-in`, {
+
+    let response = await fetch(`${proxy}/auth/sign-in`, {
       method: "POST",
-      mode: "cors",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -19,10 +19,8 @@ export async function signIn(user: User): Promise<string> {
       body: JSON.stringify(user),
     });
 
-    const json = await response.text();
-    console.log(json);
-
-    return "N/A";
+    const json = await response.json();
+    return json.token;
   } catch (error) {
     // return Promise.reject(`An error occurred when trying to sign in: ${error}`);
     throw new Error(`An error occurred when trying to sign in: ${error}`);
