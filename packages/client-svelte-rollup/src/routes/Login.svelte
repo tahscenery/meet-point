@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { signIn } from "../auth/api";
+
   import { TextInput, PasswordInput, Checkbox } from "carbon-components-svelte";
   import { Form } from "../components";
 
@@ -7,8 +9,9 @@
   let rememberMe: boolean = false;
 
   function handleOnSubmit() {
-    console.log("Login.on:submit");
-    console.log({ email, password, rememberMe });
+    signIn({ email, password })
+      .then(data => console.log(`TOKEN = '${data}'`))
+      .catch(error => console.error(error));
   }
 </script>
 
@@ -34,7 +37,8 @@
   </div>
   <Checkbox
     style="margin: 24px 0 0 0"
-    labelText="Remember me" bind:checked={rememberMe} />
+    labelText="Remember me"
+    bind:checked={rememberMe} />
 </Form>
 
 <style>
