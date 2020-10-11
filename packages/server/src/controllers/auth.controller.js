@@ -30,7 +30,7 @@ async function signIn(req, res) {
   }
 }
 
-function signOut(_req, res) {
+function signOut(_, res) {
   res.clearCookie("t");
   res.status(200).json({ message: "Signed out" });
 }
