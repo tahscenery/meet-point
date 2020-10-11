@@ -1,6 +1,11 @@
 import React from "react";
 import { Add16 } from "@carbon/icons-react";
-import { Button, Form as CarbonForm, Tile } from "carbon-components-react";
+import {
+  Button,
+  Form as CarbonForm,
+  InlineNotification,
+  Tile,
+} from "carbon-components-react";
 
 import "./Form.scss";
 
@@ -12,20 +17,34 @@ function handleOnSubmit(e: React.FormEvent<HTMLFormElement>) {
 type FormProps = {
   title: string;
   caption: string;
-  captionLink: { link: string; text: string } | null;
-  submitButtonText: string;
-  children: any[];
+  captionLink?: { link: string; text: string };
+  submitButtonText?: string;
+  canSubmit?: boolean;
+  onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
+  isError?: boolean;
+  errorMessage?: string;
+  children?: React.ReactChild[];
 };
 
 const Form = (props: FormProps) => {
-  const { title, caption, captionLink, submitButtonText, children } = props;
+  const {
+    title,
+    caption,
+    captionLink,
+    submitButtonText,
+    canSubmit,
+    onSubmit,
+    isError,
+    errorMessage,
+    children,
+  } = props;
 
   return (
     <div className="form">
       <Tile style={{ padding: 0 }}>
-        <CarbonForm onSubmit={handleOnSubmit}>
+        <CarbonForm onSubmit={onSubmit ? onSubmit : handleOnSubmit}>
           <div className="form-content">
-            <div className="form-header">
+            <div className={isError ? "form-header-error" : "form-header"}>
               <h3>{title}</h3>
               <p>
                 {caption}{" "}
@@ -35,20 +54,34 @@ const Form = (props: FormProps) => {
               </p>
             </div>
 
+            {isError && (
+              <InlineNotification
+                hideCloseButton
+                lowContrast
+                kind="error"
+                title="Error:"
+                subtitle={errorMessage || "An error occurred"}
+              />
+            )}
+
             <div className="form-body">
               <hr className="form-body-element" />
-              {children.map(child => (
-                <div className="form-body-element">{child}</div>
+              {children.map((child, i) => (
+                <div key={i} className="form-body-element">
+                  {child}
+                </div>
               ))}
             </div>
           </div>
 
           <div className="form-footer">
             <Button
+              type="submit"
               icon={Add16}
+              disabled={!canSubmit}
               style={{ minWidth: "50%", minHeight: "4rem", paddingTop: "0" }}
             >
-              {submitButtonText}
+              {submitButtonText || "Continue"}
             </Button>
           </div>
         </CarbonForm>

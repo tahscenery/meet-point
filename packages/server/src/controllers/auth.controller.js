@@ -9,7 +9,7 @@ async function signIn(req, res) {
     console.log(user);
 
     if (!user) {
-      res.status(401).json({ message: "User not found" });
+      res.status(401).json({ message: "No user found with the given email" });
     } else if (!user.authenticate(req.body.password)) {
       res.status(401).json({ message: "Email and password don't match" });
     } else {

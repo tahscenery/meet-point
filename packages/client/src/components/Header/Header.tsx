@@ -19,7 +19,8 @@ const Header = () => (
       Point
     </HeaderName>
     <HeaderNavigation aria-label="Carbon Tutorial">
-      <HeaderMenuItem href="/repos">Repositories</HeaderMenuItem>
+      <HeaderMenuItem href="/feed">My Feed</HeaderMenuItem>
+      <HeaderMenuItem href="/groups">My Groups</HeaderMenuItem>
     </HeaderNavigation>
     <HeaderGlobalBar>
       <HeaderGlobalAction aria-label="Settings">

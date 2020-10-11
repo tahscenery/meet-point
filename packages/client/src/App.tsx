@@ -1,36 +1,25 @@
 import React from "react";
-import { Content, TextInput } from "carbon-components-react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { Content } from "carbon-components-react";
 
-import { Form, Header } from "./components";
+import { Header } from "./components";
+import { Home, Login, NotFound, Register } from "./routes";
 import "./App.scss";
-
-const AppContent = (
-  <div>
-    <Form
-      title="Log in"
-      caption="Don't have an account?"
-      captionLink={{ link: "/register", text: "Create an account" }}
-      submitButtonText="Log in"
-    >
-      <TextInput
-        id="username"
-        labelText="Username"
-        placeholder="Enter your username..."
-      />
-      <TextInput.PasswordInput
-        id="password"
-        labelText="Password"
-        placeholder="Enter your password..."
-      />
-    </Form>
-  </div>
-);
 
 const App = () => {
   return (
     <>
       <Header />
-      <Content>{AppContent}</Content>
+      <Content>
+        <BrowserRouter>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path="/login" component={Login} />
+            <Route path="/register" component={Register} />
+            <Route component={NotFound} />
+          </Switch>
+        </BrowserRouter>
+      </Content>
     </>
   );
 };
