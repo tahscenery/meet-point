@@ -1,55 +1,44 @@
-<script>
-  import {
-    Button,
-    Form,
-    PasswordInput,
-    TextInput,
-  } from "carbon-components-svelte";
+<script lang="ts">
+  import { TextInput, PasswordInput, Checkbox } from "carbon-components-svelte";
+  import { Form } from "../components";
 
-  import ArrowRight16 from "carbon-icons-svelte/lib/ArrowRight16";
+  let email: string = "";
+  let password: string = "";
+  let rememberMe: boolean = false;
+
+  function handleOnSubmit() {
+    console.log("Login.on:submit");
+    console.log({ email, password, rememberMe });
+  }
 </script>
 
-<div class="form">
-  <Form on:submit>
-    <h3>Log in</h3>
-    <p>Don't have an account? <a href="/register">Create an account</a></p>
-
-    <div class="form-content">
-      <div class="form-element">
-        <TextInput labelText="Email" placeholder="username@email.com" />
-      </div>
-      <div class="form-element">
-        <PasswordInput labelText="Password" placeholder="••••••••" />
-      </div>
-    </div>
-
-    <div class="footer">
-      <Button style="min-width: 150px" icon={ArrowRight16}>Log in</Button>
-    </div>
-  </Form>
-</div>
+<Form
+  title="Login"
+  caption="Don't have an account?"
+  captionLink={{ text: 'Create an account', link: '/register' }}
+  primaryButtonText="Log in"
+  on:submit={handleOnSubmit}>
+  <div class="form-body-element">
+    <TextInput
+      light
+      labelText="Email"
+      placeholder="Enter your email..."
+      bind:value={email} />
+  </div>
+  <div class="form-body-element">
+    <PasswordInput
+      light
+      labelText="Password"
+      placeholder="Enter your password..."
+      bind:value={password} />
+  </div>
+  <Checkbox
+    style="margin: 24px 0 0 0"
+    labelText="Remember me" bind:checked={rememberMe} />
+</Form>
 
 <style>
-  h3 {
-    margin-bottom: 4px;
-  }
-
-  .form {
-    margin: 40px auto;
-    max-width: 450px;
-    padding: 16px;
-  }
-
-  .form-content {
-    margin: 48px auto;
-  }
-
-  .form-element {
-    margin-bottom: 24px;
-  }
-
-  .footer {
-    display: flex;
-    flex-direction: row-reverse;
+  .form-body-element {
+    margin-bottom: 16px;
   }
 </style>

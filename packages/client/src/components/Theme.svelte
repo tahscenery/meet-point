@@ -1,6 +1,8 @@
-<script lang="ts">
-  type Theme = "white" | "g10" | "g90" | "g100";
+<script context="module" lang="ts">
+  export type Theme = "white" | "g10" | "g90" | "g100";
+</script>
 
+<script lang="ts">
   export let persist: boolean = false;
   export let persistKey: string = "theme";
   export let theme: Theme = "white";
@@ -9,12 +11,12 @@
   import { onMount, afterUpdate, setContext } from "svelte";
   import { writable, derived } from "svelte/store";
 
-  const isValidTheme = (value) => themes.includes(value);
-  const isDark = (value) =>
+  const isValidTheme = value => themes.includes(value);
+  const isDark = value =>
     isValidTheme(value) && (value === "g90" || value === "g100");
 
   const dark = writable(isDark(theme));
-  const light = derived(dark, (_) => !_);
+  const light = derived(dark, _ => !_);
 
   setContext("Theme", {
     updateVar: (name: string, value: string) => {
