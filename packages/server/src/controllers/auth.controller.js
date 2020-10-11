@@ -3,26 +3,28 @@ const jwt = require("jsonwebtoken");
 const { jwtSecret } = require("../config");
 const { User } = require("../models");
 
-function signIn(req, res) {
+async function signIn(req, res) {
   try {
-    User.findOne({ email: req.body.email }, (error, user) => {
-      if (error || !user) {
-        res.status(404).json({ error, message: "User not found" });
-      } else if (!user.authenticate(req.body.password)) {
-        res.status(400).json({
-          error,
-          message: "Email and password don't match",
-        });
-      } else {
-        const token = jwt.sign({ _id: user._id }, jwtSecret);
-        res.cookie("t", token, { expire: new Date() + 9999 });
+    const user = await User.findOne({ email: req.body.email });
+    console.log(user);
 
-        res.status(200).json({
-          token,
-          user: { _id: user._id, name: user.name, email: user.email },
-        });
-      }
-    });
+    if (!user) {
+      res.status(401).json({ message: "User not found" });
+    } else if (!user.authenticate(req.body.password)) {
+      res.status(401).json({ message: "Email and password don't match" });
+    } else {
+      const token = jwt.sign({ _id: user._id }, jwtSecret);
+      res.cookie("t", token, { expire: new Date() + 9999 });
+
+      res.status(200).json({
+        token,
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+        },
+      });
+    }
   } catch (error) {
     res.status(400).json({ error, message: "Failed to sign in" });
   }
