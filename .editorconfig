@@ -13,7 +13,7 @@ indent_style = space
 indent_size = 2
 
 # Indentation settings for Javascript files
-[*.{js,ts}]
+[*.{js,ts,jsx,tsx}]
 indent_style = space
 indent_size = 2
 

@@ -1613,6 +1613,11 @@
     "@types/react" "*"
     flatpickr "4.6.1"
 
+"@types/carbon__icons-react@^10.17.1":
+  version "10.17.1"
+  resolved "https://registry.yarnpkg.com/@types/carbon__icons-react/-/carbon__icons-react-10.17.1.tgz#858973244e0de2c2471d3e85a6a781feb6b4bca5"
+  integrity sha512-I18TtuZGhS3Q9TBc6DI5O0p9TZaUl20d2FBWpdLxr9fNQ0CJveekj/i9pmX3w4sGXpiYe4MIE+zy+yOAin3kBA==
+
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
