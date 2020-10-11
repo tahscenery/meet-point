@@ -1,5 +1,5 @@
 import React from "react";
-import { Add16 } from "@carbon/icons-react";
+import { ArrowRight16 } from "@carbon/icons-react";
 import {
   Button,
   Form as CarbonForm,
@@ -77,7 +77,7 @@ const Form = (props: FormProps) => {
           <div className="form-footer">
             <Button
               type="submit"
-              icon={Add16}
+              renderIcon={ArrowRight16}
               disabled={!canSubmit}
               style={{ minWidth: "50%", minHeight: "4rem", paddingTop: "0" }}
             >

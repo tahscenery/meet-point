@@ -54,14 +54,14 @@ const Login = () => {
 
   const handleLogin: HandleLoginCallback = async (e, loginDetails) => {
     e.preventDefault();
-    const result = await AuthApi.login(loginDetails);
-    if (result.success) {
-      console.log("SUCCESS!");
+    const result = await AuthApi.signIn(loginDetails);
+    if (result.type === "Success") {
+      console.log("SUCCESS");
       setLoginOutcome({ didFail: false });
       history.push("/");
     } else {
-      console.error(`ERROR: ${result.message}`);
-      setLoginOutcome({ didFail: true, message: result.message });
+      console.error(`ERROR: ${result.error}`);
+      setLoginOutcome({ didFail: true, message: result.error });
     }
   };
 
