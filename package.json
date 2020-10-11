@@ -5,10 +5,10 @@
   ],
   "scripts": {
     "start": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
-    "client": "yarn workspace @meet-point/client serve",
+    "client": "yarn workspace @meet-point/client start",
     "server": "yarn workspace @meet-point/server start",
-    "build": "cd packages/client && yarn build",
-    "test": "cd packages/client && yarn validate"
+    "build": "yarn workspace @meet-point/client build",
+    "test": "yarn workspace @meet-point/client test"
   },
   "devDependencies": {
     "concurrently": "^5.3.0"}
