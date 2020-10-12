@@ -26,7 +26,7 @@ const simpleValidation = (form: Record<string, string>) => {
   return { a, b, c };
 };
 
-it("checks that a valid form is acceptable", () => {
+it("validates a form with valid values", () => {
   const a: string = "123";
   const b: string = "456";
   const c: string = "789";
@@ -35,7 +35,7 @@ it("checks that a valid form is acceptable", () => {
   expect(isFormValid).toBe(true);
 });
 
-it("checks that an invalid form is unacceptable", () => {
+it("invalidates a form with invalid values", () => {
   const a: string = "123";
   const b: string = "456";
   const c: string = "abc";
@@ -44,8 +44,8 @@ it("checks that an invalid form is unacceptable", () => {
   expect(isFormValid).toBe(false);
 });
 
-type FormInput = "name" | "email" | "password" | "confirmPassword";
-const formValidation = (form: Record<FormInput, string>) => {
+type RegisterFormInput = "name" | "email" | "password" | "confirmPassword";
+const registerFormValidation = (form: Record<RegisterFormInput, string>) => {
   let name: Validity = { isValid: false };
   let email: Validity = { isValid: false };
   let password: Validity = { isValid: false };
@@ -60,10 +60,10 @@ const formValidation = (form: Record<FormInput, string>) => {
   }
 
   const regex = /^[A-Z0-9._%+-]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/g;
-  if (form.email.length >= 3 && regex.test(form.email.toUpperCase())) {
-    email.isValid = true;
-  } else if (form.email.length === 0) {
+  if (form.email.length === 0) {
     email.errorMessage = "Please provide your email";
+  } else if (form.email.length >= 3 && regex.test(form.email.toUpperCase())) {
+    email.isValid = true;
   } else {
     email.errorMessage = "Invalid email";
   }
@@ -83,8 +83,8 @@ const formValidation = (form: Record<FormInput, string>) => {
   return { name, email, password, confirmPassword };
 };
 
-it("checks that a correct Register form is valid", () => {
-  const isFormValid = Utils.checkForm(formValidation, {
+it("validates a Register form with valid values", () => {
+  const isFormValid = Utils.checkForm(registerFormValidation, {
     name: "John Smith",
     email: "john.smith@email.com",
     password: "my-secret-password-123",
@@ -94,70 +94,141 @@ it("checks that a correct Register form is valid", () => {
   expect(isFormValid).toBe(true);
 });
 
-it("checks that an incorrect Register form is NOT valid", () => {
-  const isFormValid__emptyForm = Utils.checkForm(formValidation, {
+it("invalidates a Register form with invalid values", () => {
+  const isFormValid__emptyForm = Utils.checkForm(registerFormValidation, {
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
-  const isFormValid__missingName = Utils.checkForm(formValidation, {
+  const isFormValid__missingName = Utils.checkForm(registerFormValidation, {
     name: "",
     email: "john.smith@email.com",
     password: "my-secret-password-123",
     confirmPassword: "my-secret-password-123",
   });
 
-  const isFormValid__missingEmail = Utils.checkForm(formValidation, {
+  const isFormValid__missingEmail = Utils.checkForm(registerFormValidation, {
     name: "John Smith",
     email: "",
     password: "my-secret-password-123",
     confirmPassword: "my-secret-password-123",
   });
 
-  const isFormValid__missingPassword = Utils.checkForm(formValidation, {
+  const isFormValid__missingPassword = Utils.checkForm(registerFormValidation, {
     name: "John Smith",
     email: "john.smith@email.com",
     password: "",
     confirmPassword: "my-secret-password-123",
   });
 
-  const isFormValid__missingConfirmPassword = Utils.checkForm(formValidation, {
-    name: "John Smith",
-    email: "john.smith@email.com",
-    password: "my-secret-password-123",
-    confirmPassword: "",
-  });
+  const isFormValid__missingConfirmPassword = Utils.checkForm(
+    registerFormValidation,
+    {
+      name: "John Smith",
+      email: "john.smith@email.com",
+      password: "my-secret-password-123",
+      confirmPassword: "",
+    }
+  );
 
-  const isFormValid__invalidEmail = Utils.checkForm(formValidation, {
+  const isFormValid__invalidEmail = Utils.checkForm(registerFormValidation, {
     name: "John Smith",
     email: "this is not a valid email",
     password: "my-secret-password-123",
     confirmPassword: "my-secret-password-123",
   });
 
-  const isFormValid__tooShortPassword = Utils.checkForm(formValidation, {
-    name: "John Smith",
-    email: "john.smith@email.com",
-    password: "hello",
-    confirmPassword: "hello",
-  });
+  const isFormValid__tooShortPassword = Utils.checkForm(
+    registerFormValidation,
+    {
+      name: "John Smith",
+      email: "john.smith@email.com",
+      password: "hello",
+      confirmPassword: "hello",
+    }
+  );
 
-  const isFormValid__nonMatchingPasswords = Utils.checkForm(formValidation, {
-    name: "John Smith",
-    email: "john.smith@email.com",
-    password: "my-secret-password-123",
-    confirmPassword: "my-other-secret-password-123",
-  });
+  const isFormValid__nonMatchingPasswords = Utils.checkForm(
+    registerFormValidation,
+    {
+      name: "John Smith",
+      email: "john.smith@email.com",
+      password: "my-secret-password-123",
+      confirmPassword: "my-other-secret-password-123",
+    }
+  );
 
+  // Missing values
   expect(isFormValid__emptyForm).toBe(false);
   expect(isFormValid__missingName).toBe(false);
   expect(isFormValid__missingEmail).toBe(false);
   expect(isFormValid__missingPassword).toBe(false);
   expect(isFormValid__missingConfirmPassword).toBe(false);
 
+  // Invalid values
   expect(isFormValid__invalidEmail).toBe(false);
   expect(isFormValid__tooShortPassword).toBe(false);
   expect(isFormValid__nonMatchingPasswords).toBe(false);
+  // TODO: Test password strength...
+});
+
+type LoginFormInput = "email" | "password";
+const loginFormValidation = (form: Record<LoginFormInput, string>) => {
+  let email: Validity = { isValid: false };
+  let password: Validity = { isValid: false };
+
+  const regex = /^[A-Z0-9._%+-]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/g;
+  if (form.email.length >= 3 && regex.test(form.email.toUpperCase())) {
+    email.isValid = true;
+  } else if (form.email.length === 0) {
+    email.errorMessage = "Please provide your email";
+  } else {
+    email.errorMessage = "Invalid email";
+  }
+
+  if (form.password.length >= 8) {
+    password.isValid = true;
+  } else {
+    password.errorMessage = "Passwords must have at least 8 characters";
+  }
+
+  return { email, password };
+};
+
+it("validates a Login form with valid values", () => {
+  const isFormValid = Utils.checkForm(loginFormValidation, {
+    email: "john.smith@email.com",
+    password: "my-secret-password-123",
+  });
+
+  expect(isFormValid).toBe(true);
+});
+
+it("invalidates a Login form with invalid values", () => {
+  const isFormValid__emptyForm = Utils.checkForm(loginFormValidation, {
+    email: "",
+    password: "",
+  });
+
+  const isFormValid__missingEmail = Utils.checkForm(loginFormValidation, {
+    email: "",
+    password: "my-secret-password-123",
+  });
+
+  const isFormValid__missingPassword = Utils.checkForm(loginFormValidation, {
+    email: "john.smith@email.com",
+    password: "",
+  });
+
+  const isFormValid__invalidEmail = Utils.checkForm(loginFormValidation, {
+    email: "this is not a valid email",
+    password: "my-secret-password-123",
+  });
+
+  expect(isFormValid__emptyForm).toBe(false);
+  expect(isFormValid__missingEmail).toBe(false);
+  expect(isFormValid__missingPassword).toBe(false);
+  expect(isFormValid__invalidEmail).toBe(false);
 });
