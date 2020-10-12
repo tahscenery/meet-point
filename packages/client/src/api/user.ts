@@ -1,13 +1,8 @@
-import { Outcome } from "./index";
+import Utils, { Outcome } from "./utils";
 import { signIn, LoginToken } from "./auth";
 
-export type User = {
-  name: string;
-  email: string;
-  plainTextPassword: string;
-};
-
-type RegisterResponse = Outcome<LoginToken, string>;
+export type User = { name: string; email: string; plainTextPassword: string };
+export type RegisterResponse = Outcome<LoginToken, string>;
 
 export async function createUser(user: User): Promise<RegisterResponse> {
   try {
@@ -26,11 +21,10 @@ export async function createUser(user: User): Promise<RegisterResponse> {
         password: user.plainTextPassword,
       });
 
-      if (loginOutcome.type === "Success") {
-        return { type: "Success", data: loginOutcome.data };
-      } else {
-        return { type: "Error", error: "Failed to login with created account" };
-      }
+      return Utils.mapOutcomeError(
+        loginOutcome,
+        _ => "Failed to login with created account"
+      );
     } else {
       const error = await createUserResponse.json();
       return { type: "Error", error: error.message };

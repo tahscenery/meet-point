@@ -8,7 +8,7 @@ import { Form } from "../components";
 type FormValidity = { emailValidity: Validity; passwordValidity: Validity };
 type Validity = { isValid: boolean; errorMessage?: string };
 
-function checkValidity(email: string, password: string): FormValidity {
+export function checkValidity(email: string, password: string): FormValidity {
   const regex = /^[A-Z0-9._%+-]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/g;
 
   let emailValidity: Validity = { isValid: false };

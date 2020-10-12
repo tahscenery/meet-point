@@ -1,4 +1,4 @@
-import { Outcome } from "./index";
+import { Outcome } from "./utils";
 
 export type LoginToken = string;
 export type LoginDetails = { email: string; password: string };
