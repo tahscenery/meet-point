@@ -6,8 +6,7 @@ const { User } = require("../models");
 async function signIn(req, res) {
   try {
     const user = await User.findOne({ email: req.body.email });
-    console.log(user);
-
+    
     if (!user) {
       res.status(401).json({ message: "No user found with the given email" });
     } else if (!user.authenticate(req.body.password)) {

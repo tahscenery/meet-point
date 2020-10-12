@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Checkbox, TextInput } from "carbon-components-react";
 
-import * as AuthApi from "../auth/api";
+import { AuthApi } from "../api";
 import { Form } from "../components";
 
 type FormValidity = { emailValidity: Validity; passwordValidity: Validity };
@@ -24,8 +24,6 @@ function checkValidity(email: string, password: string): FormValidity {
 
   if (password.length >= 8) {
     passwordValidity.isValid = true;
-  } else {
-    passwordValidity.errorMessage = "Passwords must have at least 8 characters";
   }
 
   return { emailValidity, passwordValidity };
@@ -39,28 +37,28 @@ const Login = () => {
   const [, setRememberMe] = useState(false);
 
   const [shouldShowEmailError, setShouldShowEmailError] = useState(false);
-  const [shouldShowPasswordError, setShouldShowPasswordError] = useState(false);
+  const [shouldShowPasswordError,] = useState(false);
 
-  const theFormValidity = checkValidity(email, password);
-  const emailValidity = theFormValidity.emailValidity;
-  const passwordValidity = theFormValidity.passwordValidity;
-
-  type Event = React.FormEvent<HTMLFormElement>;
-  type LoginDetails = AuthApi.LoginDetails;
-  type HandleLoginCallback = (e: Event, loginDetails: LoginDetails) => void;
+  const formValidity = checkValidity(email, password);
+  const emailValidity = formValidity.emailValidity;
+  const passwordValidity = formValidity.passwordValidity;
 
   type Outcome = { didFail: boolean; message?: string };
   const [loginOutcome, setLoginOutcome] = useState<Outcome>({ didFail: false });
 
-  const handleLogin: HandleLoginCallback = async (e, loginDetails) => {
+  type Event = React.FormEvent<HTMLFormElement>;
+  type LoginDetails = AuthApi.LoginDetails;
+  type HandleLoginFn = (e: Event, loginDetails: LoginDetails) => void;
+
+  const handleLogin: HandleLoginFn = async (e, loginDetails) => {
     e.preventDefault();
     const result = await AuthApi.signIn(loginDetails);
     if (result.type === "Success") {
-      console.log("SUCCESS");
+      console.log(`SUCCESS: ${JSON.stringify(result.data)}`);
       setLoginOutcome({ didFail: false });
       history.push("/");
     } else {
-      console.error(`ERROR: ${result.error}`);
+      console.error(`ERROR: ${JSON.stringify(result.error)}`);
       setLoginOutcome({ didFail: true, message: result.error });
     }
   };
@@ -77,6 +75,7 @@ const Login = () => {
       errorMessage={loginOutcome.message}
     >
       <TextInput
+        light
         id="email"
         labelText="Email"
         placeholder="Enter your email..."
@@ -89,6 +88,7 @@ const Login = () => {
         }}
       />
       <TextInput.PasswordInput
+        light
         id="password"
         labelText="Password"
         placeholder="Enter your password..."
@@ -96,7 +96,6 @@ const Login = () => {
         invalidText={passwordValidity.errorMessage}
         onChange={e => {
           setPassword(e.target.value);
-          setShouldShowPasswordError(!passwordValidity.isValid);
           setLoginOutcome({ didFail: false });
         }}
       />

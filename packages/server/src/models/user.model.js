@@ -23,10 +23,6 @@ const UserSchema = Schema({
     trim: true,
     unique: "Email already exists",
     required: "Email is required",
-    // match: [
-    //   /^[A-Z0-9._%+-]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/g,
-    //   "Please fill a valid email address",
-    // ],
     validate: function (newEmail) {
       const regex = /^[A-Z0-9._%+-]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/g;
       return regex.test(newEmail.toUpperCase());
@@ -45,7 +41,7 @@ const UserSchema = Schema({
   },
 });
 
-UserSchema.virtual("password").set(function (newPassword) {
+UserSchema.virtual("plainTextPassword").set(function (newPassword) {
   this.salt = this.makeSalt();
   this.hashedPassword = this.encryptPassword(newPassword);
 });

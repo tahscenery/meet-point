@@ -1,9 +1,8 @@
-export type Success<T> = { type: "Success"; data: T };
-export type Error<E> = { type: "Error"; error: E };
-export type Outcome<T, E> = Success<T> | Error<E>;
+import { Outcome } from "./index";
 
+export type LoginToken = string;
 export type LoginDetails = { email: string; password: string };
-export type LoginResponse = Outcome<boolean, string>;
+export type LoginResponse = Outcome<LoginToken, string>;
 
 export async function signIn(
   loginDetails: LoginDetails
@@ -19,13 +18,15 @@ export async function signIn(
       body: JSON.stringify(loginDetails),
     });
 
-    if (response.status === 200) {
-      return { type: "Success", data: true };
+    if (response.status.toString().startsWith("2")) {
+      const { token } = await response.json();
+      return { type: "Success", data: token };
     } else {
-      return { type: "Error", error: await response.json() };
+      const { message } = await response.json();
+      return { type: "Error", error: message };
     }
   } catch (error) {
-    console.error(`An error occurred: ${error}`);
+    console.error(`An error occurred when signing in: ${error}`);
     return { type: "Error", error };
   }
 }

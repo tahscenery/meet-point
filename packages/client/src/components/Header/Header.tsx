@@ -14,10 +14,10 @@ import { Settings20, Login20 } from "@carbon/icons-react";
 
 const Header = () => {
   return (
-    <CarbonHeader aria-label="Meet Point">
+    <CarbonHeader aria-label="Group Interest">
       <SkipToContent />
-      <HeaderName href="/" prefix="Meet">
-        Point
+      <HeaderName href="/" prefix="Group">
+        Interest
       </HeaderName>
       <HeaderNavigation aria-label="Carbon Tutorial">
         <HeaderMenuItem href="/feed">My Feed</HeaderMenuItem>
