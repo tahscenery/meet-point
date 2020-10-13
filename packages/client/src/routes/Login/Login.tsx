@@ -77,6 +77,7 @@ const Login = () => {
       <TextInput
         light
         id="email"
+        type="email"
         labelText="Email"
         placeholder="Enter your email..."
         invalid={shouldShowEmailError && !emailValidity.isValid}

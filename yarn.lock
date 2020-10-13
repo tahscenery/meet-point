@@ -1153,6 +1153,14 @@
   resolved "https://registry.yarnpkg.com/@carbon/colors/-/colors-10.14.0.tgz#daf40ec57ff28d7ade9f245ba5fdff08c7f890ce"
   integrity sha512-BxmiXJxv+wULW0OA2SL2fz3aYlIKQ/BqU9Bb4ji/o+K2k4yjFYPLYRZuzR88tx79kipTOwPomY1mPYMbvK3kBQ==
 
+"@carbon/grid@^10.15.0":
+  version "10.15.0"
+  resolved "https://registry.yarnpkg.com/@carbon/grid/-/grid-10.15.0.tgz#560e750f267c5da247ca2b4b01b2a0d16fa899d2"
+  integrity sha512-XSGKz2lMEWmG/9E7ONy/YTF1IjRrcvke+Jz2spWOQPrDcg/n7sCaKlsCR9tISZ4XKjVUWOU3CtaeA1WOJqXnOA==
+  dependencies:
+    "@carbon/import-once" "^10.3.0"
+    "@carbon/layout" "^10.13.0"
+
 "@carbon/icon-helpers@^10.9.0":
   version "10.9.0"
   resolved "https://registry.yarnpkg.com/@carbon/icon-helpers/-/icon-helpers-10.9.0.tgz#5aee08e9d253d3bf6f996bc61f739660c62cbb21"

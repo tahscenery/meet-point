@@ -7,8 +7,6 @@ import {
   Tile,
 } from "carbon-components-react";
 
-import "./Form.scss";
-
 function handleOnSubmit(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault();
   console.log("Form.handleOnSubmit");

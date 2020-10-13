@@ -1,8 +1,6 @@
 import React from "react";
 import { Button } from "carbon-components-react";
 
-import "./NotFound.scss";
-
 const NotFound = () => {
   return (
     <div>

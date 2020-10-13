@@ -2,6 +2,15 @@
 
 // Use the gray 10 theme
 $carbon--theme: $carbon--theme--g10;
-@include carbon--theme();
+@include carbon--theme($carbon--theme);
 
+// Common styling
+@import "./styles/typography";
+
+// Component styles
+@import "./components/Form/Form.scss";
+@import "./components/Header/Header.scss";
+@import "./routes/NotFound/NotFound.scss";
+
+// Apply theme styles (only works when this is at the end)
 @import "carbon-components/scss/globals/scss/styles";
