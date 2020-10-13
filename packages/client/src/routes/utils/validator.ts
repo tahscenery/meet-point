@@ -1,10 +1,11 @@
-export type Validity<Error = String> = { isValid: boolean; error?: Error };
+export type Validity<Error = string> = { isValid: boolean; error?: Error };
+export type Validations<T extends string, E = string> = Record<T, Validity<E>>;
 
-type StringRecord<Value> = Record<string, Value>;
+type StringRecord<T> = Record<string, T>;
 type ValidityIn = StringRecord<string>;
-type ValidityOut<Error = String> = StringRecord<Validity<Error>>;
+type ValidityOut<Error = string> = StringRecord<Validity<Error>>;
 
-export function validate<Form extends ValidityIn, Error = String>(
+export function validate<Form extends ValidityIn, Error = string>(
   validator: (form: Form) => ValidityOut<Error>,
   form: Form
 ): ValidityOut<Error> {

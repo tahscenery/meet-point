@@ -1,12 +1,13 @@
-import validator, { Validity } from "./validator";
+import validator, { Validity, Validations } from "./validator";
 
+type SimpleForm = Record<SimpleFormInput, string>;
 type SimpleFormInput = "a" | "b" | "c";
 type SimpleFormError = "Not 123" | "Not 456" | "Not 789";
 
 type SimpleFormValidity = Validity<SimpleFormError>;
-type SimpleFormValidations = Record<SimpleFormInput, Validity<SimpleFormError>>;
+type SimpleFormValidations = Validations<SimpleFormInput, SimpleFormError>;
 
-const simpleValidator = (form: Record<SimpleFormInput, string>) => {
+const simpleValidator = (form: SimpleForm) => {
   let a: SimpleFormValidity = { isValid: false };
   let b: SimpleFormValidity = { isValid: false };
   let c: SimpleFormValidity = { isValid: false };
@@ -32,7 +33,21 @@ it("validates a simple form with valid input", () => {
   expect(isValid).toBe(true);
 });
 
-it("validates a simple form with invalid input", () => {
+it("invalidates an empty simple form", () => {
+  const form = { a: "", b: "", c: "" };
+  const validation = validator.validate(simpleValidator, form);
+  const isValid = validator.isValid(validation);
+
+  expect(validation).toStrictEqual<SimpleFormValidations>({
+    a: { isValid: false, error: "Not 123" },
+    b: { isValid: false, error: "Not 456" },
+    c: { isValid: false, error: "Not 789" },
+  });
+
+  expect(isValid).toBe(false);
+});
+
+it("invalidates a simple form with invalid input", () => {
   const form = { a: "abc", b: "def", c: "ghi" };
   const validation = validator.validate(simpleValidator, form);
   const isValid = validator.isValid(validation);
