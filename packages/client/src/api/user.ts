@@ -6,7 +6,7 @@ export type RegisterResponse = Outcome<LoginToken, string>;
 
 export async function createUser(user: User): Promise<RegisterResponse> {
   try {
-    const createUserResponse = await fetch("/api/users", {
+    const response = await fetch("/api/users", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -15,7 +15,10 @@ export async function createUser(user: User): Promise<RegisterResponse> {
       body: JSON.stringify(user),
     });
 
-    if (createUserResponse.status.toString().startsWith("2")) {
+    const statusCode = response.status.toString();
+    console.log({ statusCode });
+
+    if (statusCode.startsWith("2")) {
       const loginOutcome = await signIn({
         email: user.email,
         password: user.plainTextPassword,
@@ -26,11 +29,23 @@ export async function createUser(user: User): Promise<RegisterResponse> {
         _ => "Failed to login with created account"
       );
     } else {
-      const error = await createUserResponse.json();
-      return { type: "Error", error: error.message };
+      let error = await response.text();
+      console.error(`An error occurred when signing in: ${error}`);
+
+      if (statusCode.startsWith("5")) {
+        return {
+          type: "Error",
+          error: "A server error occurred. Please try again later",
+        };
+      } else {
+        return {
+          type: "Error",
+          error: "Something unexpected happened. Please try again later",
+        };
+      }
     }
   } catch (error) {
     console.error(`An error occurred when creating a user: ${error}`);
-    return { type: "Error", error };
+    return { type: "Error", error: error.message || error };
   }
 }

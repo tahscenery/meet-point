@@ -18,16 +18,31 @@ export async function signIn(
       body: JSON.stringify(loginDetails),
     });
 
-    if (response.status.toString().startsWith("2")) {
+    const statusCode = response.status.toString();
+    console.log({ statusCode });
+
+    if (statusCode.startsWith("2")) {
       const { token } = await response.json();
       return { type: "Success", data: token };
     } else {
-      const { message } = await response.json();
-      return { type: "Error", error: message };
+      let error = await response.text();
+      console.error(`An error occurred when signing in: ${error}`);
+
+      if (statusCode.startsWith("5")) {
+        return {
+          type: "Error",
+          error: "A server error occurred. Please try again later",
+        };
+      } else {
+        return {
+          type: "Error",
+          error: "Something unexpected happened. Please try again later",
+        };
+      }
     }
   } catch (error) {
     console.error(`An error occurred when signing in: ${error}`);
-    return { type: "Error", error };
+    return { type: "Error", error: error.message || error };
   }
 }
 
