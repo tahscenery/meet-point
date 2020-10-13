@@ -4,29 +4,36 @@ import { Checkbox, TextInput } from "carbon-components-react";
 
 import { AuthApi } from "../../api";
 import { Form } from "../../components";
+import validator, { Validity, Validations } from "../utils/validator";
 
-type FormValidity = { emailValidity: Validity; passwordValidity: Validity };
-type Validity = { isValid: boolean; errorMessage?: string };
+export type LoginForm = Record<LoginFormInput, string>;
+export type LoginFormInput = "email" | "password";
+export type LoginFormError = string;
 
-export function checkValidity(email: string, password: string): FormValidity {
+export type LoginFormValidity = Validity<LoginFormError>;
+export type LoginFormValidations = Validations<LoginFormInput, LoginFormError>;
+
+export function loginFormValidator(form: LoginForm): LoginFormValidations {
   const regex = /^[A-Z0-9._%+-]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/g;
 
-  let emailValidity: Validity = { isValid: false };
-  let passwordValidity: Validity = { isValid: false };
+  let email: LoginFormValidity = { isValid: false };
+  let password: LoginFormValidity = { isValid: false };
 
-  if (email.length > 3 && regex.test(email.toUpperCase())) {
-    emailValidity.isValid = true;
-  } else if (email.length === 0) {
-    emailValidity.errorMessage = "Please provide your email";
+  if (form.email.length === 0) {
+    email.error = "Please provide your email";
+  } else if (!regex.test(form.email.toUpperCase())) {
+    email.error = "Invalid email";
   } else {
-    emailValidity.errorMessage = "Invalid email";
+    email.isValid = true;
   }
 
-  if (password.length >= 8) {
-    passwordValidity.isValid = true;
+  if (form.password.length < 8) {
+    password.error = "Please provide your password";
+  } else {
+    password.isValid = true;
   }
 
-  return { emailValidity, passwordValidity };
+  return { email, password };
 }
 
 const Login = () => {
@@ -36,20 +43,15 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [, setRememberMe] = useState(false);
 
+  const form = { email, password };
+  const validation = validator.validate(loginFormValidator, form);
   const [shouldShowEmailError, setShouldShowEmailError] = useState(false);
-  const [shouldShowPasswordError,] = useState(false);
-
-  const formValidity = checkValidity(email, password);
-  const emailValidity = formValidity.emailValidity;
-  const passwordValidity = formValidity.passwordValidity;
 
   type Outcome = { didFail: boolean; message?: string };
   const [loginOutcome, setLoginOutcome] = useState<Outcome>({ didFail: false });
 
   type Event = React.FormEvent<HTMLFormElement>;
-  type LoginDetails = AuthApi.LoginDetails;
-  type HandleLoginFn = (e: Event, loginDetails: LoginDetails) => void;
-
+  type HandleLoginFn = (e: Event, loginDetails: AuthApi.LoginDetails) => void;
   const handleLogin: HandleLoginFn = async (e, loginDetails) => {
     e.preventDefault();
     const result = await AuthApi.signIn(loginDetails);
@@ -69,7 +71,7 @@ const Login = () => {
       caption="Don't have an account?"
       captionLink={{ link: "/register", text: "Create one now" }}
       submitButtonText="Log in"
-      canSubmit={emailValidity.isValid && passwordValidity.isValid}
+      canSubmit={validation.email.isValid && validation.password.isValid}
       onSubmit={e => handleLogin(e, { email, password })}
       isError={loginOutcome.didFail}
       errorMessage={loginOutcome.message}
@@ -80,11 +82,11 @@ const Login = () => {
         type="email"
         labelText="Email"
         placeholder="Enter your email..."
-        invalid={shouldShowEmailError && !emailValidity.isValid}
-        invalidText={emailValidity.errorMessage}
+        invalid={shouldShowEmailError && !validation.email.isValid}
+        invalidText={validation.email.error}
         onChange={e => {
           setEmail(e.target.value);
-          setShouldShowEmailError(!emailValidity.isValid);
+          setShouldShowEmailError(!validation.email.isValid);
           setLoginOutcome({ didFail: false });
         }}
       />
@@ -93,8 +95,6 @@ const Login = () => {
         id="password"
         labelText="Password"
         placeholder="Enter your password..."
-        invalid={shouldShowPasswordError && !passwordValidity.isValid}
-        invalidText={passwordValidity.errorMessage}
         onChange={e => {
           setPassword(e.target.value);
           setLoginOutcome({ didFail: false });
