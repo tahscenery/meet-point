@@ -4,63 +4,63 @@ import { TextInput } from "carbon-components-react";
 
 import { UserApi } from "../../api";
 import { Form } from "../../components";
+import validator, { Validity, Validations } from "../utils/validator";
 
-type FormValidity = {
-  nameValidity: Validity;
-  emailValidity: Validity;
-  passwordValidity: Validity;
-  confirmPasswordValidity: Validity;
-};
-type Validity = { isValid: boolean; errorMessage?: string };
+export const invalidNameMessage =
+  "Your name must have at least 3 characters and may only contain valid letters from any language including upper case letters, lower case letters, hyphens or dashes (-/–) or apostrophes (').";
 
-function checkValidity(
-  name: string,
-  email: string,
-  password: string,
-  confirmPassword: string
-): FormValidity {
-  const regex = /^[A-Z0-9._%+-]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/g;
+export type RegForm = Record<RegFormInput, string>;
+export type RegFormInput = "name" | "email" | "password" | "confirmPassword";
+export type RegFormError = string;
 
-  let nameValidity: Validity = { isValid: false };
-  let emailValidity: Validity = { isValid: false };
-  let passwordValidity: Validity = { isValid: false };
-  let confirmPasswordValidity: Validity = { isValid: false };
+export type RegFormValidity = Validity<RegFormError>;
+export type RegFormValidations = Validations<RegFormInput, RegFormError>;
 
-  if (name.length >= 3) {
-    nameValidity.isValid = true;
-  } else if (name.length === 0) {
-    nameValidity.errorMessage = "Please provide your name";
+export function registrationFormValidator(form: RegForm): RegFormValidations {
+  const nameRegex = /^[\p{L}\p{Pd}' ]{3,}$/gu;
+  const emailRegex = /^[A-Z0-9._%+-]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/g;
+
+  let name: RegFormValidity = { isValid: false };
+  let email: RegFormValidity = { isValid: false };
+  let password: RegFormValidity = { isValid: false };
+  let confirmPassword: RegFormValidity = { isValid: false };
+
+  if (form.name.length === 0) {
+    name.error = "Please provide your name";
+  } else if (!nameRegex.test(form.name.trim())) {
+    name.error = invalidNameMessage;
   } else {
-    nameValidity.errorMessage = "Your name must have at least 3 characters";
+    name.isValid = true;
   }
 
-  if (email.length > 3 && regex.test(email.toUpperCase())) {
-    emailValidity.isValid = true;
-  } else if (email.length === 0) {
-    emailValidity.errorMessage = "Please provide your email";
+  if (form.email.length === 0) {
+    email.error = "Please provide your email";
+  } else if (!emailRegex.test(form.email.trim().toUpperCase())) {
+    email.error = "Invalid email";
   } else {
-    emailValidity.errorMessage = "Invalid email";
+    email.isValid = true;
   }
 
-  if (password.length >= 8) {
-    passwordValidity.isValid = true;
+  if (form.password.length === 0) {
+    password.error = "Please provide your password";
+  } else if (form.password.length < 8) {
+    password.error = "Your password must have at least 8 characters";
   } else {
-    passwordValidity.errorMessage =
-      "Your password must have at least 8 characters";
+    password.isValid = true;
   }
 
-  if (confirmPassword === password) {
-    confirmPasswordValidity.isValid = true;
+  if (form.confirmPassword.length === 0) {
+    confirmPassword.error = "Please provide your password again";
+  } else if (
+    form.password.length !== 0 &&
+    form.confirmPassword !== form.password
+  ) {
+    confirmPassword.error = "Passwords don't match";
   } else {
-    confirmPasswordValidity.errorMessage = "Passwords don't match";
+    confirmPassword.isValid = true;
   }
 
-  return {
-    nameValidity,
-    emailValidity,
-    passwordValidity,
-    confirmPasswordValidity,
-  };
+  return { name, email, password, confirmPassword };
 }
 
 const Register = () => {
@@ -71,6 +71,9 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const form = { name, email, password, confirmPassword };
+  const validation = validator.validate(registrationFormValidator, form);
+
   const [shouldShowNameError, setShouldShowNameError] = useState(false);
   const [shouldShowEmailError, setShouldShowEmailError] = useState(false);
   const [shouldShowPasswordError, setShouldShowPasswordError] = useState(false);
@@ -79,21 +82,13 @@ const Register = () => {
     setShouldShowConfirmPasswordError,
   ] = useState(false);
 
-  const formValidity = checkValidity(name, email, password, confirmPassword);
-  const nameValidity = formValidity.nameValidity;
-  const emailValidity = formValidity.emailValidity;
-  const passwordValidity = formValidity.passwordValidity;
-  const confirmPasswordValidity = formValidity.confirmPasswordValidity;
-
   type Outcome = { didFail: boolean; message?: string };
   const [registerOutcome, setRegisterOutcome] = useState<Outcome>({
     didFail: false,
   });
 
   type Event = React.FormEvent<HTMLFormElement>;
-  type RegisterDetails = UserApi.User;
-  type HandleRegisterFn = (e: Event, registerDetails: RegisterDetails) => void;
-
+  type HandleRegisterFn = (e: Event, registerDetails: UserApi.User) => void;
   const handleRegister: HandleRegisterFn = async (e, registerDetails) => {
     e.preventDefault();
     const result = await UserApi.createUser(registerDetails);
@@ -113,10 +108,10 @@ const Register = () => {
       caption="Already have an account?"
       captionLink={{ link: "/login", text: "Log in" }}
       canSubmit={
-        nameValidity.isValid &&
-        emailValidity.isValid &&
-        passwordValidity.isValid &&
-        confirmPasswordValidity.isValid
+        validation.name.isValid &&
+        validation.email.isValid &&
+        validation.password.isValid &&
+        validation.confirmPassword.isValid
       }
       onSubmit={e =>
         handleRegister(e, { name, email, plainTextPassword: password })
@@ -129,11 +124,11 @@ const Register = () => {
         id="name"
         labelText="Name"
         placeholder="Enter your name..."
-        invalid={shouldShowNameError && !nameValidity.isValid}
-        invalidText={nameValidity.errorMessage}
+        invalid={shouldShowNameError && !validation.name.isValid}
+        invalidText={validation.name.error}
         onChange={e => {
           setName(e.target.value);
-          setShouldShowNameError(!nameValidity.isValid);
+          setShouldShowNameError(!validation.name.isValid);
           setRegisterOutcome({ didFail: false });
         }}
       />
@@ -143,11 +138,11 @@ const Register = () => {
         type="email"
         labelText="Email"
         placeholder="Enter your email..."
-        invalid={shouldShowEmailError && !emailValidity.isValid}
-        invalidText={emailValidity.errorMessage}
+        invalid={shouldShowEmailError && !validation.email.isValid}
+        invalidText={validation.email.error}
         onChange={e => {
           setEmail(e.target.value);
-          setShouldShowEmailError(!emailValidity.isValid);
+          setShouldShowEmailError(!validation.email.isValid);
           setRegisterOutcome({ didFail: false });
         }}
       />
@@ -156,11 +151,11 @@ const Register = () => {
         id="password"
         labelText="Password"
         placeholder="Enter your password..."
-        invalid={shouldShowPasswordError && !passwordValidity.isValid}
-        invalidText={passwordValidity.errorMessage}
+        invalid={shouldShowPasswordError && !validation.password.isValid}
+        invalidText={validation.password.error}
         onChange={e => {
           setPassword(e.target.value);
-          setShouldShowPasswordError(!passwordValidity.isValid);
+          setShouldShowPasswordError(!validation.password.isValid);
           setRegisterOutcome({ didFail: false });
         }}
       />
@@ -170,12 +165,14 @@ const Register = () => {
         labelText="Confirm password"
         placeholder="Enter your password again..."
         invalid={
-          shouldShowConfirmPasswordError && !confirmPasswordValidity.isValid
+          shouldShowConfirmPasswordError && !validation.confirmPassword.isValid
         }
-        invalidText={confirmPasswordValidity.errorMessage}
+        invalidText={validation.confirmPassword.error}
         onChange={e => {
           setConfirmPassword(e.target.value);
-          setShouldShowConfirmPasswordError(!confirmPasswordValidity.isValid);
+          setShouldShowConfirmPasswordError(
+            !validation.confirmPassword.isValid
+          );
           setRegisterOutcome({ didFail: false });
         }}
       />
