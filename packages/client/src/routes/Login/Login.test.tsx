@@ -1,4 +1,4 @@
-import { LoginFormValidations, loginFormValidator } from "./Login";
+import { loginFormValidator, LoginFormValidations } from "./Login";
 import validator from "../utils/validator";
 
 it("validates a Login form with valid input", () => {
