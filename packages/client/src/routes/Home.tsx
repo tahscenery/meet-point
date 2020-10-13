@@ -9,7 +9,7 @@ const Home = () => {
       <p>This is the home page</p>
       <div>
         <Link href="/login">Login</Link>
-        <br/>
+        <br />
         <Link href="/register">Register</Link>
       </div>
     </div>

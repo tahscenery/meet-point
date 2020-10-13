@@ -1,10 +1,18 @@
 import React from "react";
+import { Button } from "carbon-components-react";
+
+import "./NotFound.scss";
 
 const NotFound = () => {
   return (
     <div>
-      <h1>404</h1>
-      <p>Oops, you weren't meant to see this!</p>
+      <div className="header">
+        <h1 className="header__title">404</h1>
+        <p>Oops! This wasn't supposed to happen.</p>
+        <div className="header__intention">
+          <Button href="/">Take me home</Button>
+        </div>
+      </div>
     </div>
   );
 };
