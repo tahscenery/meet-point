@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Checkbox, TextInput } from "carbon-components-react";
 
-import { AuthApi } from "../api";
-import { Form } from "../components";
+import { AuthApi } from "../../api";
+import { Form } from "../../components";
 
 type FormValidity = { emailValidity: Validity; passwordValidity: Validity };
 type Validity = { isValid: boolean; errorMessage?: string };

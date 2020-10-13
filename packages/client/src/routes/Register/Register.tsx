@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { TextInput } from "carbon-components-react";
 
-import { UserApi } from "../api";
-import { Form } from "../components";
+import { UserApi } from "../../api";
+import { Form } from "../../components";
 
 type FormValidity = {
   nameValidity: Validity;
