@@ -21,7 +21,7 @@ export function loginFormValidator(form: LoginForm): LoginFormValidations {
 
   if (form.email.length === 0) {
     email.error = "Please provide your email";
-  } else if (!regex.test(form.email.toUpperCase())) {
+  } else if (!regex.test(form.email.trim().toUpperCase())) {
     email.error = "Invalid email";
   } else {
     email.isValid = true;
