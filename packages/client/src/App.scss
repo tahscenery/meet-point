@@ -9,7 +9,8 @@ $carbon--theme: $carbon--theme--g10;
 
 // Component styles
 @import "./components/Form/Form.scss";
-@import "./components/Header/Header.scss";
+
+// Route styles
 @import "./routes/NotFound/NotFound.scss";
 
 // Apply theme styles (only works when this is at the end)

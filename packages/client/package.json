@@ -10,6 +10,7 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "@carbon/grid": "^10.15.0",
     "@carbon/icons-react": "^10.19.0",
     "@carbon/themes": "^10.20.0",
     "@testing-library/jest-dom": "^4.2.4",

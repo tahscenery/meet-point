@@ -9,17 +9,18 @@ import "./App.scss";
 const App = () => {
   return (
     <>
-      <Header />
-      <Content>
-        <BrowserRouter>
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/login" component={Login} />
-            <Route path="/register" component={Register} />
-            <Route component={NotFound} />
-          </Switch>
-        </BrowserRouter>
-      </Content>
+      <Header>
+        <Content>
+          <BrowserRouter>
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/login" component={Login} />
+              <Route path="/register" component={Register} />
+              <Route component={NotFound} />
+            </Switch>
+          </BrowserRouter>
+        </Content>
+      </Header>
     </>
   );
 };
