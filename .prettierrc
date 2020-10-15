@@ -1,7 +1,7 @@
 {
   "arrowParens": "avoid",
+  "jsxBracketSameLine": true,
   "semi": true,
-  "svelteSortOrder": "scripts-markup-styles",
   "tabWidth": 2,
   "useTabs": false
 }

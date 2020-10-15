@@ -1,7 +1,7 @@
 import React from "react";
 
 import {
-  Header as CarbonHeader,
+  Header,
   HeaderContainer,
   HeaderGlobalBar,
   HeaderGlobalAction,
@@ -17,11 +17,11 @@ import {
 
 import { Settings20, Login20, Person20 } from "@carbon/icons-react";
 
-type HeaderProps = {
+type UIShellProps = {
   children?: JSX.Element;
 };
 
-const Header = ({ children }: HeaderProps) => {
+const UIShell = ({ children }: UIShellProps) => {
   const handleOnGlobalActionClick = (
     location: "Settings" | "Profile" | "Login"
   ) => {
@@ -42,14 +42,12 @@ const Header = ({ children }: HeaderProps) => {
     <>
       <HeaderMenuItem
         isCurrentPage={window.location.pathname === "/feed"}
-        href="/feed"
-      >
+        href="/feed">
         My Feed
       </HeaderMenuItem>
       <HeaderMenuItem
         isCurrentPage={window.location.pathname === "/groups"}
-        href="/groups"
-      >
+        href="/groups">
         My Groups
       </HeaderMenuItem>
     </>
@@ -60,7 +58,7 @@ const Header = ({ children }: HeaderProps) => {
       render={({ isSideNavExpanded, onClickSideNavExpand }) => (
         <>
           {/* Header */}
-          <CarbonHeader aria-label="Group Interest">
+          <Header aria-label="Group Interest">
             <SkipToContent />
             <HeaderMenuButton
               aria-label="Open menu"
@@ -80,20 +78,17 @@ const Header = ({ children }: HeaderProps) => {
             <HeaderGlobalBar>
               <HeaderGlobalAction
                 aria-label="Settings"
-                onClick={_ => handleOnGlobalActionClick("Settings")}
-              >
+                onClick={_ => handleOnGlobalActionClick("Settings")}>
                 <Settings20 />
               </HeaderGlobalAction>
               <HeaderGlobalAction
                 aria-label="Profile"
-                onClick={_ => handleOnGlobalActionClick("Profile")}
-              >
+                onClick={_ => handleOnGlobalActionClick("Profile")}>
                 <Person20 />
               </HeaderGlobalAction>
               <HeaderGlobalAction
                 aria-label="Login"
-                onClick={_ => handleOnGlobalActionClick("Login")}
-              >
+                onClick={_ => handleOnGlobalActionClick("Login")}>
                 <Login20 />
               </HeaderGlobalAction>
             </HeaderGlobalBar>
@@ -102,15 +97,14 @@ const Header = ({ children }: HeaderProps) => {
             <SideNav
               aria-label="Side navigation"
               expanded={isSideNavExpanded}
-              isPersistent={false}
-            >
+              isPersistent={false}>
               <SideNavItems>
                 <HeaderSideNavItems>
                   <MenuItems />
                 </HeaderSideNavItems>
               </SideNavItems>
             </SideNav>
-          </CarbonHeader>
+          </Header>
 
           {/* Content */}
           {children}
@@ -120,4 +114,4 @@ const Header = ({ children }: HeaderProps) => {
   );
 };
 
-export default Header;
+export default UIShell;
