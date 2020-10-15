@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, Redirect } from "react-router-dom";
 import { Checkbox, TextInput } from "carbon-components-react";
 
 import { AuthApi } from "../../api";
@@ -36,8 +36,13 @@ export function loginFormValidator(form: LoginForm): LoginFormValidations {
   return { email, password };
 }
 
-const Login = () => {
-  const history = useHistory();
+type LoginProps = {
+  setIsSignedIn: (_: boolean) => void;
+};
+
+const Login = ({ setIsSignedIn }: LoginProps) => {
+  const location = useLocation<{ from: { pathname: string } }>();
+  const { from } = location.state || { from: { pathname: "/" } };
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,6 +54,12 @@ const Login = () => {
 
   type Outcome = { didFail: boolean; message?: string };
   const [loginOutcome, setLoginOutcome] = useState<Outcome>({ didFail: false });
+  const [redirectToReferrer, setRedirectToReferrer] = useState(false);
+
+  // Update header to display user actions if successfully signed in
+  useEffect(() => {
+    return setIsSignedIn(redirectToReferrer);
+  }, [setIsSignedIn, redirectToReferrer]);
 
   type Event = React.FormEvent<HTMLFormElement>;
   type HandleLoginFn = (e: Event, loginDetails: AuthApi.LoginDetails) => void;
@@ -56,14 +67,16 @@ const Login = () => {
     e.preventDefault();
     const result = await AuthApi.signIn(loginDetails);
     if (result.type === "Success") {
-      console.log(`SUCCESS: ${JSON.stringify(result.data)}`);
       setLoginOutcome({ didFail: false });
-      history.push("/");
+      AuthApi.authenticate(result.data, () => setRedirectToReferrer(true));
     } else {
-      console.error(`ERROR: ${JSON.stringify(result.error)}`);
       setLoginOutcome({ didFail: true, message: result.error });
     }
   };
+
+  if (redirectToReferrer) {
+    return <Redirect to={from} />;
+  }
 
   return (
     <Form
@@ -74,8 +87,7 @@ const Login = () => {
       canSubmit={validation.email.isValid && validation.password.isValid}
       onSubmit={e => handleLogin(e, { email, password })}
       isError={loginOutcome.didFail}
-      errorMessage={loginOutcome.message}
-    >
+      errorMessage={loginOutcome.message}>
       <TextInput
         light
         id="email"

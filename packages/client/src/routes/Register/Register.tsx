@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, Redirect } from "react-router-dom";
 import { TextInput } from "carbon-components-react";
 
-import { UserApi } from "../../api";
+import { AuthApi, UserApi } from "../../api";
 import { Form } from "../../components";
 import validator, { Validity, Validations } from "../utils/validator";
 
@@ -63,8 +63,13 @@ export function registrationFormValidator(form: RegForm): RegFormValidations {
   return { name, email, password, confirmPassword };
 }
 
-const Register = () => {
-  const history = useHistory();
+type RegisterProps = {
+  setIsSignedIn: (_: boolean) => void;
+};
+
+const Register = ({ setIsSignedIn }: RegisterProps) => {
+  const location = useLocation<{ from: { pathname: string } }>();
+  const { from } = location.state || { from: { pathname: "/" } };
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -86,6 +91,12 @@ const Register = () => {
   const [registerOutcome, setRegisterOutcome] = useState<Outcome>({
     didFail: false,
   });
+  const [redirectToReferrer, setRedirectToReferrer] = useState(false);
+
+  // Update header to display user actions if successfully signed in
+  useEffect(() => {
+    return setIsSignedIn(redirectToReferrer);
+  }, [setIsSignedIn, redirectToReferrer]);
 
   type Event = React.FormEvent<HTMLFormElement>;
   type HandleRegisterFn = (e: Event, registerDetails: UserApi.User) => void;
@@ -93,14 +104,16 @@ const Register = () => {
     e.preventDefault();
     const result = await UserApi.createUser(registerDetails);
     if (result.type === "Success") {
-      console.log(`SUCCESS: ${JSON.stringify(result.data)}`);
       setRegisterOutcome({ didFail: false });
-      history.push("/");
+      AuthApi.authenticate(result.data, () => setRedirectToReferrer(true));
     } else {
-      console.error(`ERROR: ${JSON.stringify(result.error)}`);
       setRegisterOutcome({ didFail: true, message: result.error });
     }
   };
+
+  if (redirectToReferrer) {
+    return <Redirect to={from} />;
+  }
 
   return (
     <Form
@@ -117,8 +130,7 @@ const Register = () => {
         handleRegister(e, { name, email, plainTextPassword: password })
       }
       isError={registerOutcome.didFail}
-      errorMessage={registerOutcome.message}
-    >
+      errorMessage={registerOutcome.message}>
       <TextInput
         light
         id="name"

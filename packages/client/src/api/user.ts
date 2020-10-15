@@ -29,18 +29,19 @@ export async function createUser(user: User): Promise<RegisterResponse> {
         _ => "Failed to login with created account"
       );
     } else {
-      let error = await response.text();
-      console.error(`An error occurred when signing in: ${error}`);
+      let { message } = await response.json();
+      console.error(`An error occurred when signing in: ${message}`);
 
       if (statusCode.startsWith("5")) {
         return {
           type: "Error",
-          error: "A server error occurred. Please try again later",
+          error: message || "A server error occurred. Please try again later",
         };
       } else {
         return {
           type: "Error",
-          error: "Something unexpected happened. Please try again later",
+          error:
+            message || "Something unexpected happened. Please try again later",
         };
       }
     }

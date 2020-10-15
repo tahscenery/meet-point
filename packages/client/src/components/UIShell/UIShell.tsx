@@ -15,25 +15,55 @@ import {
   SkipToContent,
 } from "carbon-components-react";
 
-import { Settings20, Login20, Person20 } from "@carbon/icons-react";
+import {
+  Help20,
+  Login20,
+  Logout20,
+  Person20,
+  Settings20,
+  UserFollow20,
+} from "@carbon/icons-react";
+
+import AuthApi from "../../api/auth";
 
 type UIShellProps = {
+  isSignedIn: boolean;
   children?: JSX.Element;
 };
 
-const UIShell = ({ children }: UIShellProps) => {
-  const handleOnGlobalActionClick = (
-    location: "Settings" | "Profile" | "Login"
-  ) => {
-    switch (location) {
-      case "Settings":
-        window.location.pathname = "/settings";
-        break;
-      case "Profile":
-        window.location.pathname = "/register";
+const UIShell = ({ isSignedIn, children }: UIShellProps) => {
+  type GlobalAction =
+    | "Help"
+    | "Login"
+    | "Logout"
+    | "Profile"
+    | "Register"
+    | "Settings";
+
+  const handleOnGlobalActionClick = (action: GlobalAction) => {
+    const redirectTo = (path: string) => (window.location.pathname = path);
+
+    switch (action) {
+      case "Help":
+        redirectTo("/help");
         break;
       case "Login":
-        window.location.pathname = "/login";
+        redirectTo("/login");
+        break;
+      case "Logout":
+        AuthApi.clearJwt(() => redirectTo("/"));
+        break;
+      case "Profile":
+        redirectTo("/profile");
+        break;
+      case "Register":
+        redirectTo("/register");
+        break;
+      case "Settings":
+        redirectTo("/settings");
+        break;
+      default:
+        redirectTo("/");
         break;
     }
   };
@@ -70,27 +100,49 @@ const UIShell = ({ children }: UIShellProps) => {
             </HeaderName>
 
             {/* Header Navigation Links */}
-            <HeaderNavigation aria-label="IBM [Platform]">
+            <HeaderNavigation aria-label="Navigation">
               <MenuItems />
             </HeaderNavigation>
 
             {/* Header Actions */}
             <HeaderGlobalBar>
               <HeaderGlobalAction
-                aria-label="Settings"
-                onClick={_ => handleOnGlobalActionClick("Settings")}>
-                <Settings20 />
+                aria-label="Help"
+                onClick={_ => handleOnGlobalActionClick("Help")}>
+                <Help20 />
               </HeaderGlobalAction>
-              <HeaderGlobalAction
-                aria-label="Profile"
-                onClick={_ => handleOnGlobalActionClick("Profile")}>
-                <Person20 />
-              </HeaderGlobalAction>
-              <HeaderGlobalAction
-                aria-label="Login"
-                onClick={_ => handleOnGlobalActionClick("Login")}>
-                <Login20 />
-              </HeaderGlobalAction>
+              {isSignedIn ? (
+                <>
+                  <HeaderGlobalAction
+                    aria-label="Settings"
+                    onClick={_ => handleOnGlobalActionClick("Settings")}>
+                    <Settings20 />
+                  </HeaderGlobalAction>
+                  <HeaderGlobalAction
+                    aria-label="Profile"
+                    onClick={_ => handleOnGlobalActionClick("Profile")}>
+                    <Person20 />
+                  </HeaderGlobalAction>
+                  <HeaderGlobalAction
+                    aria-label="Logout"
+                    onClick={_ => handleOnGlobalActionClick("Logout")}>
+                    <Logout20 />
+                  </HeaderGlobalAction>
+                </>
+              ) : (
+                <>
+                  <HeaderGlobalAction
+                    aria-label="Register"
+                    onClick={_ => handleOnGlobalActionClick("Register")}>
+                    <UserFollow20 />
+                  </HeaderGlobalAction>
+                  <HeaderGlobalAction
+                    aria-label="Login"
+                    onClick={_ => handleOnGlobalActionClick("Login")}>
+                    <Login20 />
+                  </HeaderGlobalAction>
+                </>
+              )}
             </HeaderGlobalBar>
 
             {/* Side Navigation */}
