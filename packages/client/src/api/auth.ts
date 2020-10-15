@@ -26,13 +26,14 @@ export async function signIn(
       } = await response.json();
       return { type: "Success", data: { _id, token } };
     } else {
+      // TODO: Handle when user is not connected to the server/internet
       let { message } = await response.json();
       console.log(`An error occurred when signing in: ${message}`);
 
       if (statusCode.startsWith("5")) {
         return {
           type: "Error",
-          error: message || "A server error occurred. Please try again later",
+          error: "A server error occurred. Please try again later",
         };
       } else {
         return {
@@ -43,7 +44,11 @@ export async function signIn(
     }
   } catch (error) {
     console.error(`An error occurred when signing in: ${error}`);
-    return { type: "Error", error: error.message || error };
+    return {
+      type: "Error",
+      error:
+        "We're having trouble signing you in. Please try again at a later time.",
+    };
   }
 }
 

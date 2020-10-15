@@ -41,6 +41,10 @@ type LoginProps = {
 };
 
 const Login = ({ setIsSignedIn }: LoginProps) => {
+  useEffect(() => {
+    document.title = "Group Interest – Login";
+  });
+
   const location = useLocation<{ from: { pathname: string } }>();
   const { from } = location.state || { from: { pathname: "/" } };
 

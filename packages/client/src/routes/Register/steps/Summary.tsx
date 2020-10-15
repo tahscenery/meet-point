@@ -39,7 +39,7 @@ const Summary = () => {
             <td>{registrationDetails.email}</td>
           </tr>
           <tr>
-            <td>Selected interests</td>
+            <td>Interests</td>
             <td>
               {registrationDetails.interests.map((interest, i) => (
                 <Tag key={i} title="Clear filter" type="cool-gray">

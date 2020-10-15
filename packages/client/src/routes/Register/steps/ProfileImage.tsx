@@ -36,7 +36,7 @@ const Personalization = () => {
           buttonLabel="Upload image"
           filenameStatus="edit"
           iconDescription="Clear file"
-          labelDescription="only .jpg files at 500mb or less"
+          labelDescription="only .jpg or .png files at 500mb or less"
           labelTitle="Upload"
           onChange={e => console.log(e.target.value)}
         />

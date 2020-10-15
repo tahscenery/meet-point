@@ -6,7 +6,7 @@ import RegistrationContext, {
   CurrentProgress,
   RegistrationDetails,
 } from "../../context/register-context";
-import { Account, Interests, Personalization, Summary } from "./steps";
+import { Account, Interests, ProfileImage, Summary } from "./steps";
 
 type RegisterProps = {
   setIsSignedIn: (_: boolean) => void;
@@ -36,7 +36,7 @@ const Register = ({ setIsSignedIn }: RegisterProps) => {
   const currentComponent = () => {
     switch (progress) {
       case CurrentProgress.PROFILE_IMAGE:
-        return <Personalization />;
+        return <ProfileImage />;
       case CurrentProgress.INTERESTS:
         return <Interests interests={details.interests || defaultInterests} />;
       case CurrentProgress.SUMMARY:
