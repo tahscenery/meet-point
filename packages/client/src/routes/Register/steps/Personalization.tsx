@@ -19,7 +19,7 @@ const Personalization = () => {
   const handleContinue = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     context.setRegistrationDetails({});
-    context.setCurrentProgress(CurrentProgress.SELECT_INTERESTS);
+    context.setCurrentProgress(CurrentProgress.INTERESTS);
   };
 
   return (

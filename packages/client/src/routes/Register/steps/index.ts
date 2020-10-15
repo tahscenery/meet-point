@@ -1,6 +1,6 @@
 import Account from "./Account";
-import Confirm from "./Confirm";
-import Summary from "./Summary";
+import Interests from "./Interests";
 import Personalization from "./Personalization";
+import Summary from "./Summary";
 
-export { Account, Confirm, Summary, Personalization };
+export { Account, Interests, Personalization, Summary };

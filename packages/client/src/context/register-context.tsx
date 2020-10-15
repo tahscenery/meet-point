@@ -2,9 +2,9 @@ import { createContext } from "react";
 
 export enum CurrentProgress {
   ACCOUNT,
-  PERSONALIZATION,
-  SELECT_INTERESTS,
-  CONFIRM,
+  PROFILE_IMAGE,
+  INTERESTS,
+  SUMMARY,
 }
 
 export interface RegistrationDetails {

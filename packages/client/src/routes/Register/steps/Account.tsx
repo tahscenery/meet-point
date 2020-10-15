@@ -87,7 +87,7 @@ const Account = (oldState: AccountProps) => {
   const handleContinue = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     context.setRegistrationDetails({ ...values });
-    context.setCurrentProgress(CurrentProgress.PERSONALIZATION);
+    context.setCurrentProgress(CurrentProgress.PROFILE_IMAGE);
   };
 
   return (

@@ -6,7 +6,7 @@ import RegistrationContext, {
   CurrentProgress,
   RegistrationDetails,
 } from "../../context/register-context";
-import { Account, Confirm, Personalization, Summary } from "./steps";
+import { Account, Interests, Personalization, Summary } from "./steps";
 
 type RegisterProps = {
   setIsSignedIn: (_: boolean) => void;
@@ -35,12 +35,12 @@ const Register = ({ setIsSignedIn }: RegisterProps) => {
 
   const currentComponent = () => {
     switch (progress) {
-      case CurrentProgress.PERSONALIZATION:
+      case CurrentProgress.PROFILE_IMAGE:
         return <Personalization />;
-      case CurrentProgress.SELECT_INTERESTS:
-        return <Summary interests={details.interests || defaultInterests} />;
-      case CurrentProgress.CONFIRM:
-        return <Confirm />;
+      case CurrentProgress.INTERESTS:
+        return <Interests interests={details.interests || defaultInterests} />;
+      case CurrentProgress.SUMMARY:
+        return <Summary />;
       default:
         return (
           <Account
@@ -55,7 +55,7 @@ const Register = ({ setIsSignedIn }: RegisterProps) => {
 
   // type Outcome = { didFail: boolean; message?: string };
   // const [outcome, setOutcome] = useState<Outcome>({ didFail: false });
-  const [redirectToReferrer, /* setRedirectToReferrer */] = useState(false);
+  const [redirectToReferrer /* setRedirectToReferrer */] = useState(false);
 
   // Update header to display user actions if successfully signed in
   useEffect(() => {
