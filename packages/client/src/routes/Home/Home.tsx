@@ -1,13 +1,13 @@
 import React from "react";
-import { isAuthenticated } from "../../api/auth";
+import { AuthApi } from "../../api";
 
 const Home = () => {
-  console.log({ isAuthenticated: isAuthenticated() });
+  const authentication = AuthApi.authentication();
+  console.log(authentication);
 
   return (
     <div>
-      <h1>Home</h1>
-      <p>This is the home page</p>
+      <h1>Welcome</h1>
     </div>
   );
 };

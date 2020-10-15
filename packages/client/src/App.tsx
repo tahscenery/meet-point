@@ -3,25 +3,32 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Content } from "carbon-components-react";
 
 import { UIShell } from "./components";
-import { Home, Login, NotFound, Register } from "./routes";
+import { Home, Login, NotFound, Profile, Register } from "./routes";
 import { AuthApi } from "api";
 import "./App.scss";
 
 const App = () => {
-  const [isSignedIn, setIsSignedIn] = useState(AuthApi.isAuthenticated());
+  const authentication = AuthApi.authentication();
+  const [, setIsSignedIn] = useState(authentication.isAuthenticated);
 
   return (
-    <UIShell isSignedIn={isSignedIn}>
+    <UIShell authentication={authentication}>
       <Content>
         <BrowserRouter>
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route path="/login">
-              <Login setIsSignedIn={setIsSignedIn} />
-            </Route>
-            <Route path="/register">
-              <Register setIsSignedIn={setIsSignedIn} />
-            </Route>
+            <Route
+              path="/login"
+              render={_ => <Login setIsSignedIn={setIsSignedIn} />}
+            />
+            <Route
+              path="/register"
+              render={_ => <Register setIsSignedIn={setIsSignedIn} />}
+            />
+            <Route
+              path="/profile/:id"
+              render={({ match }) => <Profile id={match.params.id} />}
+            />
             <Route component={NotFound} />
           </Switch>
         </BrowserRouter>

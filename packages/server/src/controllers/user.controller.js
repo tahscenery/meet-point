@@ -11,11 +11,8 @@ async function allUsers(_, res) {
 
 async function createUser(req, res) {
   try {
-    console.log(req.body);
     const user = new User(req.body);
-    console.log(user);
     const newUser = await user.save();
-    console.log(newUser);
     res.status(200).json(newUser);
   } catch (error) {
     if (error.error?.code === 10000 || 11000) {
@@ -31,10 +28,12 @@ async function createUser(req, res) {
 async function readUser(req, res) {
   try {
     const { id } = req.params;
-    const user = await User.findById(id);
-    res.status(200).json(user);
+    const { _id, admin, name, email, created } = await User.findById(id);
+    res.status(200).json({ _id, admin, name, email, created });
   } catch (error) {
-    res.status(400).json({ message: "Failed to get users", error });
+    res
+      .status(500)
+      .json({ message: "Failed to get user with given ID", error });
   }
 }
 
@@ -45,7 +44,7 @@ async function updateUser(req, res) {
     const updatedUser = await user.updateOne(req.body);
     res.status(200).json(updatedUser);
   } catch (error) {
-    res.status(400).json({ message: "Failed to update user", error });
+    res.status(500).json({ message: "Failed to update user", error });
   }
 }
 
@@ -55,7 +54,7 @@ async function deleteUser(req, res) {
     const deletedUser = await user.remove();
     res.status(200).json(deletedUser);
   } catch (error) {
-    res.status(400).json({ message: "Failed to delete user", error });
+    res.status(500).json({ message: "Failed to delete user", error });
   }
 }
 

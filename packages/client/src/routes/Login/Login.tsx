@@ -65,12 +65,14 @@ const Login = ({ setIsSignedIn }: LoginProps) => {
   type HandleLoginFn = (e: Event, loginDetails: AuthApi.LoginDetails) => void;
   const handleLogin: HandleLoginFn = async (e, loginDetails) => {
     e.preventDefault();
-    const result = await AuthApi.signIn(loginDetails);
-    if (result.type === "Success") {
+    const response = await AuthApi.signIn(loginDetails);
+    if (response.type === "Success") {
       setLoginOutcome({ didFail: false });
-      AuthApi.authenticate(result.data, () => setRedirectToReferrer(true));
+
+      const { _id: id, token } = response.data;
+      AuthApi.authenticate({ id, token }, () => setRedirectToReferrer(true));
     } else {
-      setLoginOutcome({ didFail: true, message: result.error });
+      setLoginOutcome({ didFail: true, message: response.error });
     }
   };
 

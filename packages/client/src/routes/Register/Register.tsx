@@ -99,15 +99,19 @@ const Register = ({ setIsSignedIn }: RegisterProps) => {
   }, [setIsSignedIn, redirectToReferrer]);
 
   type Event = React.FormEvent<HTMLFormElement>;
-  type HandleRegisterFn = (e: Event, registerDetails: UserApi.User) => void;
+  type HandleRegisterFn = (
+    e: Event,
+    registerDetails: UserApi.RegisterDetails
+  ) => void;
   const handleRegister: HandleRegisterFn = async (e, registerDetails) => {
     e.preventDefault();
-    const result = await UserApi.createUser(registerDetails);
-    if (result.type === "Success") {
+    const response = await UserApi.createUser(registerDetails);
+    if (response.type === "Success") {
       setRegisterOutcome({ didFail: false });
-      AuthApi.authenticate(result.data, () => setRedirectToReferrer(true));
+      const { _id: id, token } = response.data;
+      AuthApi.authenticate({ id, token }, () => setRedirectToReferrer(true));
     } else {
-      setRegisterOutcome({ didFail: true, message: result.error });
+      setRegisterOutcome({ didFail: true, message: response.error });
     }
   };
 

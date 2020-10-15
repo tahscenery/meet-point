@@ -24,14 +24,14 @@ import {
   UserFollow20,
 } from "@carbon/icons-react";
 
-import AuthApi from "../../api/auth";
+import AuthApi, { Authentication } from "../../api/auth";
 
 type UIShellProps = {
-  isSignedIn: boolean;
+  authentication: Authentication,
   children?: JSX.Element;
 };
 
-const UIShell = ({ isSignedIn, children }: UIShellProps) => {
+const UIShell = ({ authentication, children }: UIShellProps) => {
   type GlobalAction =
     | "Help"
     | "Login"
@@ -54,7 +54,7 @@ const UIShell = ({ isSignedIn, children }: UIShellProps) => {
         AuthApi.clearJwt(() => redirectTo("/"));
         break;
       case "Profile":
-        redirectTo("/profile");
+        redirectTo(`/profile/${authentication.id}`);
         break;
       case "Register":
         redirectTo("/register");
@@ -111,7 +111,7 @@ const UIShell = ({ isSignedIn, children }: UIShellProps) => {
                 onClick={_ => handleOnGlobalActionClick("Help")}>
                 <Help20 />
               </HeaderGlobalAction>
-              {isSignedIn ? (
+              {authentication.isAuthenticated ? (
                 <>
                   <HeaderGlobalAction
                     aria-label="Settings"

@@ -1,8 +1,8 @@
 import { Outcome } from "./utils";
 
-export type LoginToken = string;
 export type LoginDetails = { email: string; password: string };
-export type LoginResponse = Outcome<LoginToken, string>;
+export type LoginData = { _id: string; token: string };
+export type LoginResponse = Outcome<LoginData, string>;
 
 export async function signIn(
   loginDetails: LoginDetails
@@ -19,11 +19,12 @@ export async function signIn(
     });
 
     const statusCode = response.status.toString();
-    console.log({ statusCode });
-
     if (statusCode.startsWith("2")) {
-      const { token } = await response.json();
-      return { type: "Success", data: token };
+      const {
+        token,
+        user: { _id },
+      } = await response.json();
+      return { type: "Success", data: { _id, token } };
     } else {
       let { message } = await response.json();
       console.log(`An error occurred when signing in: ${message}`);
@@ -60,25 +61,37 @@ export async function signOut(): Promise<LogoutResponse> {
   }
 }
 
-export function isAuthenticated(): boolean {
+export type Authentication = {
+  isAuthenticated: boolean;
+  id?: string;
+  token?: string;
+};
+
+export function authentication(): Authentication {
   if (typeof window === "undefined") {
-    return false;
+    return { isAuthenticated: false };
   }
 
-  if (sessionStorage.getItem("jwt")) {
-    return true;
+  const id = sessionStorage.getItem("id");
+  const token = sessionStorage.getItem("jwt");
+
+  if (id && token) {
+    return { isAuthenticated: true, id, token };
   } else {
-    return false;
+    return { isAuthenticated: false };
   }
 }
 
-export function authenticate(token: string, callback: () => void) {
+type AuthenticateParams = { id: string; token: string };
+
+export function authenticate(params: AuthenticateParams, callback: () => void) {
   if (typeof window === "undefined") {
     console.error("Failed to authenticate user");
     return;
   }
 
-  sessionStorage.setItem("jwt", token);
+  sessionStorage.setItem("id", params.id);
+  sessionStorage.setItem("jwt", params.token);
   callback();
 }
 
@@ -100,4 +113,4 @@ export async function clearJwt(callback: () => void) {
   }
 }
 
-export default { signIn, signOut, isAuthenticated, clearJwt };
+export default { signIn, signOut, authentication, authenticate, clearJwt };
