@@ -2,8 +2,8 @@ import {
   invalidNameMessage,
   registrationFormValidator,
   RegFormValidations,
-} from "./Register";
-import validator from "../utils/validator";
+} from "./Account";
+import validator from "../../utils/validator";
 
 it("validates a Register form with valid input", () => {
   const form = {

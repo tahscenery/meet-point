@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, InlineNotification, Tile } from "carbon-components-react";
+import { InlineNotification } from "carbon-components-react";
 
 import { AuthApi, UserApi } from "../../api";
 import "./Profile.scss";
@@ -10,23 +10,13 @@ type ProfileDetails = {
   created: Date;
 };
 
-const ProfileTile = ({ name, email, created }: ProfileDetails) => {
-  return (
-    <div className="profile-page__container">
-      <div className="profile-page__container-left">
-        <Tile>
-          <ul>
-            <li>You are: {name}.</li>
-            <li>Your email is: {email}.</li>
-            <li>You created your account on {created.toLocaleDateString()}.</li>
-          </ul>
-        </Tile>
-      </div>
-      <div className="profile-page__container-right">
-        <Button>Hello!</Button>
-      </div>
-    </div>
-  );
+type ProfileTileProps = {
+  loading: boolean;
+  profileDetails: ProfileDetails;
+};
+
+const ProfileTile = (_: ProfileTileProps) => {
+  return <div className="profile-page__container">{/* TODO... */}</div>;
 };
 
 type ProfileProps = {
@@ -63,9 +53,7 @@ const Profile = ({ id }: ProfileProps) => {
 
   return (
     <div className="profile-page">
-      {loading ? (
-        <p>Loading...</p>
-      ) : outcome.didFail ? (
+      {outcome.didFail ? (
         <InlineNotification
           hideCloseButton
           lowContrast
@@ -74,7 +62,7 @@ const Profile = ({ id }: ProfileProps) => {
           subtitle={outcome.message || "An unknown error occurred"}
         />
       ) : (
-        <ProfileTile {...values} />
+        <ProfileTile loading={loading} profileDetails={values} />
       )}
     </div>
   );

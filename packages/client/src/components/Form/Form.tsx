@@ -19,9 +19,11 @@ type FormProps = {
   submitButtonText?: string;
   canSubmit?: boolean;
   onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
+  showPreviousButton?: boolean;
+  onPrevious?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   isError?: boolean;
   errorMessage?: string;
-  children?: React.ReactChild[];
+  children?: React.ReactNode;
 };
 
 const Form = (props: FormProps) => {
@@ -32,6 +34,8 @@ const Form = (props: FormProps) => {
     submitButtonText,
     canSubmit,
     onSubmit,
+    showPreviousButton,
+    onPrevious,
     isError,
     errorMessage,
     children,
@@ -64,7 +68,7 @@ const Form = (props: FormProps) => {
 
             <div className="form-body">
               <hr className="form-body-element" />
-              {children.map((child, i) => (
+              {React.Children.map(children, (child, i) => (
                 <div key={i} className="form-body-element">
                   {child}
                 </div>
@@ -77,10 +81,17 @@ const Form = (props: FormProps) => {
               type="submit"
               renderIcon={ArrowRight16}
               disabled={!canSubmit}
-              style={{ minWidth: "50%", minHeight: "4rem", paddingTop: "0" }}
-            >
+              style={{ minWidth: "50%", minHeight: "4rem", paddingTop: "0" }}>
               {submitButtonText || "Continue"}
             </Button>
+            {showPreviousButton && (
+              <Button
+                kind="secondary"
+                style={{ minWidth: "50%", minHeight: "4rem", paddingTop: "0" }}
+                onClick={e => onPrevious(e)}>
+                Previous
+              </Button>
+            )}
           </div>
         </CarbonForm>
       </Tile>
